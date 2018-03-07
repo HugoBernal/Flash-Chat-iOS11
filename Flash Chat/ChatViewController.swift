@@ -7,9 +7,9 @@
 //
 
 import UIKit
+import Firebase
 
-
-class ChatViewController: UIViewController {
+class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     // Declare instance variables here
 
@@ -27,7 +27,8 @@ class ChatViewController: UIViewController {
         
         //TODO: Set yourself as the delegate and datasource here:
         
-        
+        messageTableView.dataSource = self
+        messageTableView.delegate = self
         
         //TODO: Set yourself as the delegate of the text field here:
 
@@ -38,6 +39,9 @@ class ChatViewController: UIViewController {
         
 
         //TODO: Register your MessageCell.xib file here:
+        messageTableView.register(UINib(nibName: "MessageCell", bundle: nil), forCellReuseIdentifier: "customMessageCell")
+        
+        configureTableView()
 
         
     }
@@ -46,11 +50,23 @@ class ChatViewController: UIViewController {
     
     //MARK: - TableView DataSource Methods
     
-    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "customMessageCell", for: indexPath) as! CustomMessageCell
+        
+        let messageArray = ["First Message", "Second Messageñdhjsfajshdfkjashdfkjahsdlfkashdlkfjhaskdfjhaslkdjfhalksjdhfaklsjdhflaksjdhfaklsjdhfaksljdhfalksdhjfalksdhfaklsdhflaskdhjfalksjdhflaksdjhfalksdjhlakjhfjkasdhfajkslhdfajkshdfjklasdhflakshdfjhasdjkfhlalkshfjfhajsdbcnazcbhjdbcalsdjbcqprbjcaksjhdgfasybecaoiusfhbcalsjkdhlbavkjdhfbaovsiufhabcilushiacubhsdlcashjdks", "Third Message"]
+        
+        cell.messageBody.text = messageArray[indexPath.row]
+        
+        return cell
+        
+    }
     
     //TODO: Declare cellForRowAtIndexPath here:
     
-    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 3
+    }
     
     //TODO: Declare numberOfRowsInSection here:
     
@@ -62,7 +78,10 @@ class ChatViewController: UIViewController {
     
     //TODO: Declare configureTableView here:
     
-    
+    func configureTableView() {
+        messageTableView.rowHeight = UITableViewAutomaticDimension
+        messageTableView.estimatedRowHeight = 120.0
+    }
     
     ///////////////////////////////////////////
     
@@ -108,6 +127,14 @@ class ChatViewController: UIViewController {
         
         //TODO: Log out the user and send them back to WelcomeViewController
         
+        do {
+            try Auth.auth().signOut()
+            
+            navigationController?.popToRootViewController(animated: true)
+        }
+        catch {
+            print("error, there was a problem signing out")
+        }
         
     }
     
